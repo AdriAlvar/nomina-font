@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
     const [user, setUser] = useState('');
     const [clave, setClave] = useState('');
     const [mensaje, setMensaje] = useState('');
     const [token, setToken] = useState('');
+    const navigate = useNavigate(); // ← ESTO ya lo tenés
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -22,7 +24,7 @@ export default function Login() {
             if (data.estado === 1) {
                 setToken(data.token);
                 localStorage.setItem('token', data.token);
-                setMensaje('✅ Autenticado correctamente');
+                navigate('/dashboard/');
             } else {
                 setMensaje(data.mensaje || 'Credenciales incorrectas');
             }
@@ -40,6 +42,7 @@ export default function Login() {
                     placeholder="Usuario"
                     value={user}
                     onChange={(e) => setUser(e.target.value)}
+                    autoFocus
                     style={{ width: '100%', padding: 8, marginBottom: 10 }}
                 />
                 <input

@@ -1,10 +1,20 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import './index.css';
-import Login from './pages/Login'; // 👈 Importamos tu nuevo componente
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './pages/Login';
+import DashboardLayout from './layout/DashboardLayout';
+import Personales from './pages/Personales';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Login />
-  </StrictMode>,
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route path="personales" element={<Personales />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </BrowserRouter>
+  </StrictMode>
 );
