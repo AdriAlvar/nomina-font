@@ -29,8 +29,14 @@ export default function DashboardLayout() {
                                 <Link to="/dashboard/personales" style={navLink(location.pathname === '/dashboard/personales')}>
                                     👤 Personales
                                 </Link>
-                                <span style={navLink(false)}>📌 Cargos</span>
-                                <span style={navLink(false)}>📋 Rubros</span>
+                                <Link to="/dashboard/cargos" style={navLink(location.pathname === '/dashboard/cargos')}>
+                                    📌 Cargos
+                                </Link>
+
+                                <Link to="/dashboard/rubros" style={navLink(location.pathname === '/dashboard/rubros')}>
+                                    📋 Rubros/Conceptos
+                                </Link>
+
                             </div>
                         )}
                     </div>
