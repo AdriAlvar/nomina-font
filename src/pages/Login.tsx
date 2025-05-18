@@ -5,8 +5,7 @@ export default function Login() {
     const [user, setUser] = useState('');
     const [clave, setClave] = useState('');
     const [mensaje, setMensaje] = useState('');
-    const [token, setToken] = useState('');
-    const navigate = useNavigate(); // ← ESTO ya lo tenés
+    const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -22,7 +21,6 @@ export default function Login() {
             const data = await res.json();
 
             if (data.estado === 1) {
-                setToken(data.token);
                 localStorage.setItem('token', data.token);
                 navigate('/dashboard/');
             } else {

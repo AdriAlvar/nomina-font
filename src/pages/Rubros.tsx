@@ -1,11 +1,22 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import type { CSSProperties } from 'react';
+
+type Rubro = {
+    idrubro: number;
+    descripcion: string;
+    tipo: 'credito' | 'debito';
+    monto: number;
+    afecta_ips: boolean;
+    considera_aguinaldo: boolean;
+    recurrente: boolean;
+};
 
 export default function Rubros() {
-    const [rubros, setRubros] = useState([]);
+    const [rubros, setRubros] = useState<Rubro[]>([]);
     const [modalAbierto, setModalAbierto] = useState(false);
     const [descripcion, setDescripcion] = useState('');
-    const [tipo, setTipo] = useState('credito');
+    const [tipo, setTipo] = useState<'credito' | 'debito'>('credito');
     const [monto, setMonto] = useState('');
     const [afectaIPS, setAfectaIPS] = useState(true);
     const [aguinaldo, setAguinaldo] = useState(true);
@@ -61,7 +72,7 @@ export default function Rubros() {
                         </tr>
                     </thead>
                     <tbody>
-                        {rubros.map((r: any) => (
+                        {rubros.map((r) => (
                             <tr key={r.idrubro}>
                                 <td style={tdStyle}>{r.idrubro}</td>
                                 <td style={tdStyle}>{r.descripcion}</td>
@@ -84,7 +95,7 @@ export default function Rubros() {
                     <div style={{ background: '#fff', padding: 24, borderRadius: 6, minWidth: 300 }}>
                         <h3 style={{ marginBottom: 12 }}>Agregar Rubro</h3>
                         <input placeholder="Descripción" value={descripcion} onChange={e => setDescripcion(e.target.value)} style={inputStyle} />
-                        <select value={tipo} onChange={e => setTipo(e.target.value)} style={inputStyle}>
+                        <select value={tipo} onChange={e => setTipo(e.target.value as 'credito' | 'debito')} style={inputStyle}>
                             <option value="credito">Crédito</option>
                             <option value="debito">Débito</option>
                         </select>
@@ -103,6 +114,20 @@ export default function Rubros() {
     );
 }
 
-const thStyle = { border: '1px solid #ccc', padding: 8, textAlign: 'left' };
-const tdStyle = { border: '1px solid #ccc', padding: 8 };
-const inputStyle = { display: 'block', width: '100%', marginBottom: 8, padding: 6 };
+const thStyle: CSSProperties = {
+    border: '1px solid #ccc',
+    padding: 8,
+    textAlign: 'left' as const,
+};
+
+const tdStyle: CSSProperties = {
+    border: '1px solid #ccc',
+    padding: 8,
+};
+
+const inputStyle: CSSProperties = {
+    display: 'block',
+    width: '100%',
+    marginBottom: 8,
+    padding: 6,
+};

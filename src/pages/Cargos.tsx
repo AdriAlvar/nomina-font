@@ -1,16 +1,35 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Select from 'react-select';
+import type { CSSProperties } from 'react';
+
+type Persona = {
+    idpersona: number;
+    nombre: string;
+    apellido: string;
+    documento: string;
+};
+
+type Cargo = {
+    idcargo: number;
+    persona: string;
+    documento: string;
+    descripcion: string;
+    tareas: string;
+    fecha_inicio: string;
+    fecha_baja: string | null;
+};
 
 export default function Cargos() {
-    const [cargos, setCargos] = useState([]);
-    const [personas, setPersonas] = useState([]);
+    const [cargos, setCargos] = useState<Cargo[]>([]);
+    const [personas, setPersonas] = useState<Persona[]>([]);
     const [modalAbierto, setModalAbierto] = useState(false);
     const [descripcion, setDescripcion] = useState('');
     const [tareas, setTareas] = useState('');
     const [fechaInicio, setFechaInicio] = useState('');
     const [fechaBaja, setFechaBaja] = useState('');
     const [idpersona, setIdpersona] = useState('');
+    const [filtroDocumento, setFiltroDocumento] = useState('');
 
     const cargarCargos = () => {
         axios.post('http://201.222.48.126:9023/nomina/cargo', { todo: true })
@@ -52,17 +71,30 @@ export default function Cargos() {
         cargarCargos();
     }, []);
 
+    const cargosFiltrados = cargos.filter(c =>
+        (c.documento || '').includes(filtroDocumento)
+    );
+
     return (
         <div>
             <h2 style={{ marginBottom: 12 }}>Cargos</h2>
-            <button onClick={abrirModal} style={{ marginBottom: 16 }}>➕ Agregar</button>
+            <div style={{ marginBottom: 12 }}>
+                <input
+                    placeholder="Filtrar por documento"
+                    value={filtroDocumento}
+                    onChange={e => setFiltroDocumento(e.target.value)}
+                    style={inputStyle}
+                />
+                <button onClick={abrirModal}>➕ Agregar</button>
+            </div>
 
             <div style={{ overflowX: 'auto', maxHeight: '70vh', overflowY: 'auto' }}>
-                <table style={{ minWidth: 700, width: '100%', borderCollapse: 'collapse' }}>
+                <table style={{ minWidth: 800, width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr style={{ background: '#f1f5f9' }}>
                             <th style={thStyle}>ID</th>
                             <th style={thStyle}>Persona</th>
+                            <th style={thStyle}>Documento</th>
                             <th style={thStyle}>Cargo</th>
                             <th style={thStyle}>Tareas</th>
                             <th style={thStyle}>Inicio</th>
@@ -70,10 +102,11 @@ export default function Cargos() {
                         </tr>
                     </thead>
                     <tbody>
-                        {cargos.map((c: any) => (
+                        {cargosFiltrados.map(c => (
                             <tr key={c.idcargo}>
                                 <td style={tdStyle}>{c.idcargo}</td>
                                 <td style={tdStyle}>{c.persona}</td>
+                                <td style={tdStyle}>{c.documento}</td>
                                 <td style={tdStyle}>{c.descripcion}</td>
                                 <td style={tdStyle}>{c.tareas}</td>
                                 <td style={tdStyle}>{c.fecha_inicio}</td>
@@ -98,7 +131,7 @@ export default function Cargos() {
                                 value: p.idpersona,
                                 label: `${p.nombre} ${p.apellido} - ${p.documento}`
                             }))}
-                            onChange={(opcion) => setIdpersona(opcion?.value || '')}
+                            onChange={(opcion) => setIdpersona(opcion?.value.toString() || '')}
                             placeholder="Seleccione una persona..."
                             styles={{ container: base => ({ ...base, marginBottom: 12 }) }}
                         />
@@ -116,6 +149,20 @@ export default function Cargos() {
     );
 }
 
-const thStyle = { border: '1px solid #ccc', padding: 8, textAlign: 'left' };
-const tdStyle = { border: '1px solid #ccc', padding: 8 };
-const inputStyle = { display: 'block', width: '100%', marginBottom: 8, padding: 6 };
+const thStyle: CSSProperties = {
+    border: '1px solid #ccc',
+    padding: 8,
+    textAlign: 'left' as const,
+};
+
+const tdStyle: CSSProperties = {
+    border: '1px solid #ccc',
+    padding: 8,
+};
+
+const inputStyle: CSSProperties = {
+    display: 'block',
+    width: '100%',
+    marginBottom: 8,
+    padding: 6,
+};
